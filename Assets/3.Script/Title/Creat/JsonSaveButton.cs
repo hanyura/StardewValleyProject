@@ -29,15 +29,15 @@ public class JsonSaveButton : MonoBehaviour
     void Save()
     {
         // 캐릭터 데이터 생성
-        CreatCharactorData characterData = new CreatCharactorData();
-        characterData.charactorName = characterNameInput.text; // 입력 필드에서 캐릭터 이름 가져오기
-        characterData.farmName = farmNameInput.text;           // 입력 필드에서 농장 이름 가져오기
+        Data characterData = new Data();
+        characterData.playerNewName = characterNameInput.text; // 입력 필드에서 캐릭터 이름 가져오기
+        characterData.FarmNewName = farmNameInput.text;           // 입력 필드에서 농장 이름 가져오기
 
         // 캐릭터 데이터를 저장
         SaveCharacter(characterData);
     }
 
-    public void SaveCharacter(CreatCharactorData characterData)
+    public void SaveCharacter(Data characterData)
     {
         // 캐릭터 파일 번호를 결정
         int characterNumber = GetNextCharacterNumber();

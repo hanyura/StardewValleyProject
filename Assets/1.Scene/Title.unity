@@ -3875,7 +3875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 519420031}
-  creatCharactor: {fileID: 1837171014}
+  creatCharactor: {fileID: 1033421627}
   CreatToMenuButton: {fileID: 1515504356}
   titleImage: {fileID: 637618515}
   buttons:
@@ -5448,12 +5448,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4de126163f807a749af3b2fe193bc171, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
-  loadCharactor: {fileID: 0}
-  newGameButton: {fileID: 0}
-  titleImage: {fileID: 0}
-  buttons: []
-  camMoveDustance: 10
+  cam: {fileID: 519420031}
+  loadCharactor: {fileID: 1033421627}
+  loadGameButton: {fileID: 2071413240}
+  titleImage: {fileID: 637618515}
+  buttons:
+  - {fileID: 200052349}
+  - {fileID: 2071413240}
+  - {fileID: 1563400265}
 --- !u!1 &2084733051
 GameObject:
   m_ObjectHideFlags: 0

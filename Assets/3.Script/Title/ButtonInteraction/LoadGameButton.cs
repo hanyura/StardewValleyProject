@@ -8,18 +8,17 @@ public class LoadGameButton : MonoBehaviour
 {
     public Camera cam;
     public GameObject loadCharactor;
-    public Button newGameButton;
+    public Button loadGameButton;
     public Image titleImage;
     public Button[] buttons;
-    public float camMoveDustance = 10f;
 
     private void Start()
     {
         loadCharactor.gameObject.SetActive(false);
-        newGameButton.onClick.AddListener(NewGameButtonClick);
+        loadGameButton.onClick.AddListener(LoadGameButtonClick);
     }
 
-    void NewGameButtonClick()
+    void LoadGameButtonClick()
     {
         Vector3 targetPosition = cam.transform.position + Vector3.left * 10f;
         cam.transform.DOMove(targetPosition, 2f);
