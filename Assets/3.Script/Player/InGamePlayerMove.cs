@@ -63,7 +63,7 @@ public class InGamePlayerMove : MonoBehaviour
             // 애니메이션이 재생 중일 때는 플레이어 위치를 고정
             transform.position = fixedPosition;
         }
-        
+
     }
 
     void PlayerMove()

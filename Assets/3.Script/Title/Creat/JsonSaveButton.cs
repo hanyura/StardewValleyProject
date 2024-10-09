@@ -1,67 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
+using UnityEngine.SceneManagement;
 
+// 캐릭터 생성 UI를 관리하는 클래스
 public class JsonSaveButton : MonoBehaviour
 {
-    public Button CreatButton;               // 생성 버튼
-    public InputField characterNameInput;    // 캐릭터 이름 입력 필드 (Inspector에서 연결)
-    public InputField farmNameInput;         // 농장 이름 입력 필드 (Inspector에서 연결)
-    private string saveDirectory;
+    // 인풋 필드 (플레이어 이름과 농장 이름 입력 받기 위한 UI 요소)
+    public InputField playerNameInput;
+    public InputField farmNameInput;
 
-    private void Start()
+    // OK 버튼이 눌렸을 때 호출되는 함수
+    public void OnOkButtonPressed()
     {
-        // 버튼 클릭 시 Save 메서드 호출
-        CreatButton.onClick.AddListener(Save);
+        // 인풋 필드에서 입력된 이름과 농장 이름을 가져옴
+        string playerName = playerNameInput.text;
+        string farmName = farmNameInput.text;
 
-        // 저장 디렉토리 설정 (애플리케이션의 데이터 경로에 저장)
-        saveDirectory = Application.persistentDataPath + "/Saves/";
-
-        // 저장 디렉토리가 존재하지 않으면 생성
-        if (!Directory.Exists(saveDirectory))
+        // CharacterData 객체를 생성하고 입력된 데이터로 초기화
+        CharacterData characterData = new CharacterData
         {
-            Directory.CreateDirectory(saveDirectory);
-        }
-    }
+            playerName = playerName,
+            farmName = farmName
+        };
 
-    void Save()
-    {
-        // 캐릭터 데이터 생성
-        Data characterData = new Data();
-        characterData.playerNewName = characterNameInput.text; // 입력 필드에서 캐릭터 이름 가져오기
-        characterData.FarmNewName = farmNameInput.text;           // 입력 필드에서 농장 이름 가져오기
+        // SaveSystem을 사용하여 JSON 파일로 데이터 저장
+        SaveSystem.SaveData(characterData);
 
-        // 캐릭터 데이터를 저장
-        SaveCharacter(characterData);
-    }
-
-    public void SaveCharacter(Data characterData)
-    {
-        // 캐릭터 파일 번호를 결정
-        int characterNumber = GetNextCharacterNumber();
-
-        // 파일 경로 설정
-        string filePath = saveDirectory + "character" + characterNumber + ".json";
-
-        // JSON으로 직렬화
-        string json = JsonUtility.ToJson(characterData);
-
-        // 파일에 JSON 저장
-        File.WriteAllText(filePath, json);
-
-        Debug.Log("캐릭터가 저장되었습니다: " + filePath);
-    }
-
-    private int GetNextCharacterNumber()
-    {
-        // 저장된 캐릭터 파일 수를 기반으로 다음 번호 결정
-        int count = 1;
-        while (File.Exists(saveDirectory + "character" + count + ".json"))
-        {
-            count++;
-        }
-        return count;
+        // 인게임 씬으로 이동 (씬 이름은 프로젝트에 맞게 변경 필요)
+        SceneManager.LoadScene("House");
     }
 }
