@@ -119,7 +119,7 @@ public class InGamePlayerMove : MonoBehaviour
         }
 
         // 마우스 왼쪽 버튼을 클릭했을 때, 현재 트리거가 설정되어 있으면 해당 트리거 실행
-        if (Input.GetMouseButtonDown(0) && currentTrigger != null && !isActionPlay)
+        if (Input.GetMouseButtonDown(0) && currentTrigger != null)
         {
             // 애니메이션이 재생 중이 아니면 트리거 실행
             if (!isActionPlay)
