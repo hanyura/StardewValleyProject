@@ -4,47 +4,71 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    public float rayDistance = 1f; // 레이의 거리
-    private Rigidbody2D playerRb; // 플레이어의 Rigidbody2D 컴포넌트
-    private Vector2 lastMoveDirection; // 플레이어의 마지막 이동 방향을 저장하는 변수
+    public Transform player; // 플레이어의 Transform
+    public float interactRange = 0.5f; // 플레이어 앞의 기본 한 칸(범위)
+    public KeyCode interactKey = KeyCode.Mouse0; // 인터랙션 키 (마우스 좌클릭)
 
-    private void Awake()
+    private Vector2 direction; // 플레이어가 바라보는 방향(한 칸 앞)
+    private float currentInteractRange; // 현재 인터랙션 범위 (방향에 따라 변화)
+
+    // 플레이어가 어느 방향을 보고 있는지 결정
+    private void UpdateDirection()
     {
-        // Rigidbody2D 컴포넌트를 가져옵니다.
-        playerRb = GetComponent<Rigidbody2D>();
+        if (Input.GetKey(KeyCode.W)) // 위쪽
+        {
+            direction = Vector2.up;
+            currentInteractRange = 0.5f; // 기본 0.5
+        }
+        else if (Input.GetKey(KeyCode.S)) // 아래쪽
+        {
+            direction = Vector2.down;
+            currentInteractRange = 0.7f; // 아래쪽은 0.7
+        }
+        else if (Input.GetKey(KeyCode.A)) // 왼쪽
+        {
+            direction = Vector2.left;
+            currentInteractRange = 0.5f; // 기본 0.5
+        }
+        else if (Input.GetKey(KeyCode.D)) // 오른쪽
+        {
+            direction = Vector2.right;
+            currentInteractRange = 0.5f; // 기본 0.5
+        }
     }
 
-    private void Update()
+    void Update()
     {
-        // 현재 플레이어의 속도를 가져옵니다.
-        Vector2 movement = playerRb.velocity;
+        // 플레이어가 보고 있는 방향과 현재 인터랙션 범위 업데이트
+        UpdateDirection();
 
-        // 플레이어가 움직이고 있는 경우, 마지막 이동 방향을 업데이트합니다.
-        if (movement != Vector2.zero)
+        // 클릭 이벤트 처리 (마우스 왼쪽 버튼 클릭 시)
+        if (Input.GetKeyDown(interactKey))
         {
-            lastMoveDirection = movement.normalized;
-        }
+            // 플레이어 앞의 한 칸(범위)에 Collider2D를 임시로 생성
+            Vector2 interactPosition = (Vector2)player.position + direction * currentInteractRange + new Vector2(0, -0.5f);
 
-        // 플레이어의 위치와 마지막 이동 방향으로 레이를 쏩니다.
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, lastMoveDirection, rayDistance);
+            // 해당 위치에 있는 오브젝트가 있는지 확인 (Object 태그를 가진 오브젝트만 찾음)
+            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(interactPosition, 0.1f); // 0.1f 크기의 작은 범위 사용
 
-        // 디버그용으로 Scene 뷰에서 레이를 시각화합니다.
-        Debug.DrawRay(transform.position, lastMoveDirection * rayDistance, Color.red);
-
-        // 레이가 오브젝트에 닿았을 때
-        if (hit.collider != null)
-        {
-            // 태그가 "Object"인지 확인
-            if (hit.collider.CompareTag("Object"))
+            foreach (var hitCollider in hitColliders)
             {
-                Debug.Log("Hit Object with tag 'Object': " + hit.collider.name); // 디버그 로그로 닿은 오브젝트 이름 출력
-
-                // 마우스 왼쪽 버튼을 클릭했을 때 해당 오브젝트를 제거
-                if (Input.GetMouseButtonDown(0))
+                if (hitCollider.CompareTag("Object")) // 오브젝트에 "Object" 태그가 있는 경우
                 {
-                    Destroy(hit.collider.gameObject); // 닿은 오브젝트를 제거
+                    Destroy(hitCollider.gameObject); // 오브젝트 삭제
                 }
             }
+        }
+    }
+
+    // 플레이어 앞에 생성되는 Collider 영역을 시각적으로 확인하기 위한 Gizmo
+    private void OnDrawGizmos()
+    {
+        if (player != null)
+        {
+            Gizmos.color = Color.red;
+            // Collider의 위치를 시각적으로 확인 (방향에 따라 interactRange가 다름)
+            Vector2 interactPosition = (Vector2)player.position + direction * currentInteractRange + new Vector2(0, -0.5f);
+            Gizmos.DrawWireSphere(interactPosition, 0.1f); // 0.1f 크기의 작은 구 형태로 표시
         }
     }
 }
